@@ -1,0 +1,37 @@
+# 原始课程材料与构建产物
+
+> 课程实验书原件（实验一 进程管理、实验二 内存管理）版权归原出处所有，
+> 仅作为选题依据保存在仓库之外，不入库。
+
+# 文档与压缩包
+*.doc
+*.docx
+*.pdf
+*.zip
+~$*
+
+# 编译产物
+*.o
+*.obj
+*.exe
+*.out
+a.out
+*.elf
+
+# 构建目录
+build/
+dist/
+out/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# 编辑器与系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
