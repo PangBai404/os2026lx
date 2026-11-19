@@ -13,7 +13,7 @@
 父进程再把开头两个字符替换成 "QQ"，
 最终文件内容变成 QQxxxxxxx...，两个进程就这样完成了一次基于共享内存的"通信"。
 
-实验会用到 mmap / fork 等 POSIX 系统调用，需要 POSIX 环境（Linux / macOS；Windows 用 WSL2）、C 语言和 python 3。
+实验会用到 mmap / fork 等 POSIX 系统调用，需要 POSIX 环境（Linux / macOS；Windows 可用 Ubuntu 虚拟机或 WSL2）、C 语言和 python 3。
 mmap 可以先理解为：把磁盘上的文件"搬"到进程的虚拟地址空间，之后对这段地址的
 读写就等价于对文件的读写，磁盘访问变成了内存访问。
 这个例子可以帮助你进一步理解，普通 C 程序读改写一个文件要这么做：
@@ -32,7 +32,7 @@ mmap 可以先理解为：把磁盘上的文件"搬"到进程的虚拟地址空�
 1. 完成本实验前，你需要学习：基本 C 语言编程（建议至少学到指针和结构体部分），
    以及进程的基本概念。
 2. 你需要先准备好实验环境，参见"实验包目录""环境要求"和"常见问题"。
-   ⚠ 与实验一不同：**本实验必须 POSIX 环境**（Linux / macOS；Windows 用 WSL2），原因见环境要求。
+   ⚠ 与实验一不同：**本实验必须 POSIX 环境**（Linux / macOS；Windows 可用 Ubuntu 虚拟机或 WSL2），原因见环境要求。
 3. 如果你不是很清楚，这里和代码里都有详细的提示告诉你怎么做。
 4. 写完代码后，可以查看本文档"快速开始"部分运行测例，看看自己写的对不对。
 
@@ -207,8 +207,10 @@ student/impl.c 只包含 6 个函数，main 在 harness/2_harness.c 里。
 fork、mmap、wait 都是 Unix 系统调用，Windows 原生编译器（MinGW/MSVC）
 没有这些接口，所以实验一那种"Windows 直连"的路线在这里走不通：
 
-- **Windows 用户**：安装 WSL2（管理员 PowerShell 执行 wsl --install），
-  或使用实验室的 VMware / VirtualBox Ubuntu 虚拟机（本实验默认环境）；
+- **Windows 用户**：两种方式都可以——
+  - 使用 VMware / VirtualBox 的 Ubuntu 虚拟机（推荐，有图形界面，适合初学者）；
+  - 或安装 WSL2（管理员 PowerShell 执行 `wsl --install`），更轻量，
+    但注意代码要放在 Linux 侧（如 `~/lab2`），不要放在 `/mnt/c` 或 `/mnt/e`；
 - **Linux**：原生支持，sudo apt install build-essential python3 即可；
 - **macOS**：原生支持 POSIX 接口，xcode-select --install 即可。注意：
   `solution/mem.c` 与 `student/framework.c` 目前包含非 POSIX 的
@@ -323,7 +325,7 @@ fork、mmap、wait 都是 Unix 系统调用，Windows 原生编译器（MinGW/MS
 **Windows 下 gcc 报 fork/mmap 未定义**
 
 本实验的 fork/mmap/wait 是 POSIX 系统调用，Windows 原生编译器没有。
-请改用 WSL2 或 Ubuntu 虚拟机（见"环境要求"）。
+请改用 Ubuntu 虚拟机或 WSL2（见"环境要求"）。
 
 **macOS 下编译 mem.c / framework.c 报 malloc.h not found**
 
@@ -359,7 +361,7 @@ reason=backup：TODO2 没做对（malloc 或 memmove 的问题）；
 
 **测例输出的中文变成问号或方块**
 
-本实验不支持 Windows 原生编译；请在 WSL2（UTF-8 终端）或 Linux/macOS 下运行。
+本实验不支持 Windows 原生编译；请使用 Ubuntu 虚拟机、WSL2（两者都建议用 UTF-8 终端）或 Linux/macOS。
 harness 的判分行以 ASCII 标签为主，但 check.py 的失败提示包含中文；
 在非 UTF-8 控制台可能显示为问号。改用 UTF-8 终端即可，判分逻辑不受影响。
 
