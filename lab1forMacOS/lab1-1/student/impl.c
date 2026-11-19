@@ -1,12 +1,12 @@
 /*
- * 实验一 · 任务 1：三线程累加（学生提交文件）
+ * 实验一 · 任务 1：三线程累加（学生提交文件，MAC版本）
  *
  * 这个文件由 tests/harness.c 链接使用：main 在测例那边，你只写下面三个函数。
  *
  * 需要完成：
- *   TODO 1  run_segment —— 求 [t->start, t->end] 的整数和，写回 t->sum
- *   TODO 2  run_tasks   —— 为 tasks[0..n-1] 各创建一个线程
- *   TODO 3  run_tasks   —— 等待全部线程结束
+ *   TODO 1  run_segment 求 [t->start, t->end] 的整数和，写回 t->sum
+ *   TODO 2  run_tasks 为 tasks[0..n-1] 各创建一个线程
+ *   TODO 3  run_tasks 等待全部线程结束
  *
  * 提示：
  *   - 三段任务分别对应 p1、p2、p3，已经写好了，它们都调用 run_segment；
@@ -23,11 +23,11 @@
 #define NTHREADS 3
 
 typedef struct {
-    int       id;      /* 1..NTHREADS */
-    int       start;   /* 本段起点（含） */
-    int       end;     /* 本段终点（含） */
-    long      sum;     /* 本段结果，只由本线程写入 */
-    pthread_t tid;     /* 由 run_tasks 填写，供 join 和测例使用 */
+    int id; 
+    int start;
+    int end; 
+    long sum;  
+    pthread_t tid;  
 } task_t;
 
 /* ============================================================
@@ -38,7 +38,7 @@ void *run_segment(void *arg)
 {
     task_t *t = (task_t *)arg;
 
-    /* TODO: 在这里累加并写回 t->sum */
+    //TODO: 在这里累加并写回 t->sum
     /*
         进一步提示：
         声明一个长整数累加值，
@@ -50,7 +50,7 @@ void *run_segment(void *arg)
     return NULL;
 }
 
-/* 题目要求的三段任务，各自入口一个函数 */
+//三段任务，各自入口一个函数
 void *p1(void *arg) { return run_segment(arg); }
 void *p2(void *arg) { return run_segment(arg); }
 void *p3(void *arg) { return run_segment(arg); }
@@ -60,7 +60,7 @@ void *p3(void *arg) { return run_segment(arg); }
  *   for (i = 0; i < n; i++)
  *       调用 pthread_create(&tasks[i].tid, NULL, entry[i], &tasks[i])
  *   其中 entry[] 依次是 p1、p2、p3
- *   返回非 0 表示出错（可以让 main 提前返回非 0）
+ *   返回非0表示出错（可以让 main 提前返回非 0）
  *
  * TODO 3：等待所有线程结束
  *   for (i = 0; i < n; i++)
@@ -74,8 +74,8 @@ int run_tasks(task_t *tasks, int n)
     (void)tasks;
     (void)n;
 
-    /* TODO: 创建线程 ... */
-    /* TODO: 等待线程 ... */
+    //TODO: 创建线程
+    //TODO: 等待线程
 
     return 0;
 }

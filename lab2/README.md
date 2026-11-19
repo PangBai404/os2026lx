@@ -19,15 +19,15 @@ mmap 可以先理解为：把磁盘上的文件"搬"到进程的虚拟地址空�
 这个例子可以帮助你进一步理解，普通 C 程序读改写一个文件要这么做：
 
     buf = malloc(len);
-    read(fd, buf, len);              /* 文件 → 用户缓冲区（第一次拷贝） */
-    ... 修改 buf ...                 /* 在缓冲区里改 */
+    read(fd, buf, len); 文件 → 用户缓冲区（第一次拷贝）
+    ... 修改 buf ... 在缓冲区里改
     lseek(fd, 0, SEEK_SET);
-    write(fd, buf, len);             /* 用户缓冲区 → 文件（第二次拷贝） */
+    write(fd, buf, len); 用户缓冲区 → 文件（第二次拷贝）
 
 两次拷贝、两份存储。而用 mmap 之后：
 
     src = mmap(NULL, len, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-    ... 直接修改 src[i] ...          /* 磁盘访问变成了内存访问 */
+    ... 直接修改 src[i] ...磁盘访问变成了内存访问
 
 1. 完成本实验前，你需要学习：基本 C 语言编程（建议至少学到指针和结构体部分），
    以及进程的基本概念。
@@ -50,14 +50,14 @@ PS：你可以打开 VSCode 或者其它 IDE，用分窗口的方式把这个文
 自动测例把 main 拆走后，第一次看可能不知道整体在干什么。建议先用教学完整版
 mem.c 跑一遍，建立整体印象（**报告截图也从这里来**）：
 
-    cd <实验包根目录>                     # 包含 README.md 的目录
-    cp solution/mem.c ./mem.c             # 复制工作副本，避免修改参考实现
+    cd <实验包根目录>  # 包含 README.md 的目录
+    cp solution/mem.c ./mem.c       # 复制工作副本，避免修改参考实现
     # 编辑 ./mem.c：把 "2345" 改成你的学号后四位；
     # macOS 还需删除 #include <malloc.h>（或改成 <stdlib.h>）
-    printf '0123456789abcWXYZde' > f1     # 准备数据文件（19 字节）
-    gcc mem.c -o mem                      # 编译教学版
-    ./mem                                 # 运行
-    cat f1                                # 看被修改后的文件
+    printf '0123456789abcWXYZde' > f1   # 准备数据文件（19 字节）
+    gcc mem.c -o mem        # 编译教学版
+    ./mem   # 运行
+    cat f1    # 看被修改后的文件
 
 你会看到：mmap 建好共享区 → 复制到堆 → fork 出子进程 → 子进程找到 W 换成学号
 并写回共享区 → 父进程 wait 后把开头换成 QQ → 文件最终变成 QQxxxxxxx...。
@@ -171,22 +171,23 @@ mmap 与 munmap 配对、malloc 与 free 配对，防止"内存泄漏"；
 
     lab2/
     ├── Makefile
-    ├── README.md             也就是你在看的这个
+    ├── README.md   也就是你在看的这个
     │
-    ├── student/impl.c        ★ 你要写的文件（TODO1~TODO6，不含 main）
-    ├── student/framework.c   教学框架版（TODO(1)~(14)），可选练习
-    ├── harness/2_harness.c   测例骨架：自带 main，负责 fork、输出与校验
-    ├── harness/impl.h        接口契约：6 个函数的签名与注意事项
-    ├── tests/check.py        测例：检查不变量，而不是比对整段输出
+    ├── student/impl.c ★ 你要写的文件（TODO1~TODO6，不含 main）
+    ├── student/framework.c  教学框架版（TODO(1)~(14)），可选练习
+    ├── harness/2_harness.c  测例骨架：自带 main，负责 fork、输出与校验
+    ├── harness/impl.h  接口契约：6 个函数的签名与注意事项
+    ├── tests/check.py  测例：检查不变量，而不是比对整段输出
     │
-    ├── solution/impl.c       函数版答案，与你写的文件结构一致
-    ├── solution/mem.c        教学完整版（含 main），热身与报告截图用
-    └── build/                编译产物（make 自动创建）
+    ├── solution/impl.c 函数版答案，与你写的文件结构一致
+    ├── solution/mem.c 教学完整版（含 main），热身与报告截图用
+    └── build/  编译产物（make 自动创建）
 
 > 第 0 步会把 `solution/mem.c` 复制成根目录下的 `mem.c` 作为工作副本；
 > 它不是实验包自带文件。
 
 **为什么 main 在测例里？**
+（如果你刚接触C语言，你可能会疑问：主函数呢？没有主函数怎么跑？）
 
 student/impl.c 只包含 6 个函数，main 在 harness/2_harness.c 里。
 这样输出格式、进程关系检查、数值校验都不在你手里，测例才判得准。
@@ -203,31 +204,26 @@ student/impl.c 只包含 6 个函数，main 在 harness/2_harness.c 里。
 | Python 3.4+ | 运行测例 | 必需 |
 | make | 简化命令 | 可选 |
 
-**⚠ 与实验一的重要差异：本实验不需要"跨平台"，而是"必须 POSIX"。**
-fork、mmap、wait 都是 Unix 系统调用，Windows 原生编译器（MinGW/MSVC）
-没有这些接口，所以实验一那种"Windows 直连"的路线在这里走不通：
+**⚠ 与实验一的重要差异：本实验不需要"跨平台"，而是"必须用 POSIX"。**
+fork、mmap、wait 都是 Unix 系统调用，Windows 原生编译器（MinGW/MSVC）没有这些接口，所以实验一那种"Windows 直接做"的路线在这里没法完成：
 
 - **Windows 用户**：两种方式都可以——
   - 使用 VMware / VirtualBox 的 Ubuntu 虚拟机（推荐，有图形界面，适合初学者）；
   - 或安装 WSL2（管理员 PowerShell 执行 `wsl --install`），更轻量，
     但注意代码要放在 Linux 侧（如 `~/lab2`），不要放在 `/mnt/c` 或 `/mnt/e`；
 - **Linux**：原生支持，sudo apt install build-essential python3 即可；
-- **macOS**：原生支持 POSIX 接口，xcode-select --install 即可。注意：
-  `solution/mem.c` 与 `student/framework.c` 目前包含非 POSIX 的
-  `<malloc.h>`；macOS 上没有该头文件，编译这两个文件前请删除该行
-  （`<stdlib.h>` 已包含 malloc/free 声明）。主判分链路 `student/impl.c`
-  不受影响。
+- **macOS**：原生支持 POSIX 接口，但和Linux有些许不同，** 请查看 lab2forMacOS 实验包 **
 
 ### 检查环境
 
-    getconf PAGESIZE        # Linux 通常 4096；Apple Silicon macOS 为 16384
-    python3 --version       # 3.4+（建议 3.8+）
-    make test               # 参考答案应 RESULT: PASSED——这是环境 OK 的最终判据
+    getconf PAGESIZE # Linux 通常 4096；Apple Silicon macOS 为 16384
+    python3 --version # 3.4+（建议 3.8+）
+    make test # 参考答案应 RESULT: PASSED——这是环境 OK 的最终判据
 
 ## 快速开始
 
-    make test           # 编译参考答案并判分——先确认环境和工具正常（应 PASSED）
-    make test-student   # 编译你的实现并判分（改完 student/impl.c 后跑这个）
+    make test # 编译参考答案并判分——先确认环境和工具正常（应 PASSED）
+    make test-student  # 编译你的实现并判分（改完 student/impl.c 后跑这个）
 
 **如果机器上没有 make**，等效命令：
 
@@ -244,9 +240,9 @@ fork、mmap、wait 都是 Unix 系统调用，Windows 原生编译器（MinGW/MS
 
 学号后四位从 `student/impl.c` 顶部的 `SID4` 读取，不是命令行参数。
 
-想跑教学完整版（报告截图）：
+想跑教学完整版（如果需要报告截图）：
 
-    cp solution/mem.c ./mem.c     # 复制工作副本，避免修改参考实现
+    cp solution/mem.c ./mem.c  # 复制工作副本，避免修改参考实现
     # 编辑 ./mem.c：把 "2345" 改成你的学号后四位；
     # macOS 还需删除 #include <malloc.h>（或改成 <stdlib.h>）
     printf '0123456789abcWXYZde' > f1
@@ -303,7 +299,7 @@ fork、mmap、wait 都是 Unix 系统调用，Windows 原生编译器（MinGW/MS
     ...
     RESULT: PASSED (6 rounds, 不变量 I0~I12 全部满足)
 
-## 为什么无法靠"打印答案"过关
+## 哦对，这个实验是有反作弊的，无法靠"打印答案"过关哦 QWQ
 
 1. **nonce 前缀**：main 在 harness 里，每次运行生成一个随机数 nonce，所有
    判分行都以它开头。你的代码拿不到 nonce——自己 printf 的行不带前缀，
@@ -316,9 +312,7 @@ fork、mmap、wait 都是 Unix 系统调用，Windows 原生编译器（MinGW/MS
    保留标记（[final]、nonce= 等），并作为记录。
 
 > 上述保证以 `harness/2_harness.c` 和 `tests/check.py` 未被篡改为前提。
-> 比赛判分建议使用干净的 harness/check.py 重新编译，或校验其哈希；
-> `make audit` 是独立的手动检查，不会随 `make test-student` 自动运行，
-> 如作为判分门槛请接入判分脚本/CI。
+> `make audit` 是独立的手动检查，不会随 `make test-student` 自动运行。
 
 ## 常见问题
 
@@ -375,7 +369,7 @@ Makefile 已显式指定 CC := gcc。macOS 请先安装 Xcode Command Line Tools
 
 你没在 student/impl.c 顶部填学号，或填的不是 4 位数字
 
-## 与原始实验的区别
+## 与原始实验的区别（原来的学校给的文档）
 
 - 原实验要求把 mem.c 整个程序写出来，判分靠截图和人工比对；这里拆成 6 个
   函数 + 自动判分，每条断言都可读、可解释。

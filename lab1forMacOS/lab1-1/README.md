@@ -75,28 +75,26 @@ pthread_join() 是 POSIX 线程库提供的一个函数，作用是等待指定�
 这三个线程创建后，可以并发执行。
 但是主线程并不知道它们什么时候完成，所以需要使用 `pthread_join()`。
 
-
 ## 1-1的实验包目录
 
 ```
 lab1-1/
 ├── Makefile
-├── README.md          也就是你在看的这个
+├── README.md  也就是你在看的这个
 │
-├── student/impl.c     ★ 你要写的文件（三处 TODO，不含 main）
-├── tests/harness.c      测例骨架：自带 main，负责输出与校验
-├── tests/check.py       测例：检查不变量，而不是比对整段输出
+├── student/impl.c  ★ 你要写的文件（三处 TODO，不含 main）
+├── tests/harness.c 测例骨架：自带 main，负责输出与校验
+├── tests/check.py   测例：检查不变量，而不是比对整段输出
 │
-├── solution/3.c         完整单文件版答案（含 main），用来看整体结构
-└── solution/impl.c      函数版答案，与你写的文件结构一致
+├── solution/3.c  完整单文件版答案（含 main），用来看整体结构
+└── solution/impl.c   函数版答案，与你写的文件结构一致
 ```
 
 **为什么 main 在测例里？**
+（你可能会困惑：没有主函数怎么跑？）
 
 `student/impl.c` 只包含几个函数，`main` 在 `tests/harness.c` 里。
 这样输出格式、线程检查、数值校验都不在你手里，测例才判得准。
-
-建议先读 `solution/3.c` 理解整体流程，再回到 `student/impl.c` 补 TODO。
 
 ## 环境要求
 

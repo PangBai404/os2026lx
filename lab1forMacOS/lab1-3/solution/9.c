@@ -1,16 +1,3 @@
-/*
- * 实验一 · 任务 3：哲学家就餐与资源顺序分配（参考答案 · 完整单文件版）
- *
- * 与 student/impl.c 等价，只是把 main 和叉子的实现也写了进来，便于阅读整体流程。
- * 判分用的是 solution/impl.c + tests/harness.c，不是这个文件。
- *
- * 与起点唯一的区别：申请两把叉子之前，先把编号小的那把放到前面。
- * 这一处交换打破了「循环等待」，死锁就不再可能发生。
- *
- * 编译运行：
- *   make demo && ./build/9_solution
- */
-
 #include <pthread.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -27,11 +14,9 @@ static void sleep_ms(int ms) { usleep((useconds_t)ms * 1000); }
 #define MEALS  5
 #define EAT_MS 15
 
-/* ---------------- 叉子的实现 ---------------- */
-
 static pthread_mutex_t mon = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t  free_cv[NPHIL];
-static int holder[NPHIL];      /* -1 = 空闲 */
+static int holder[NPHIL];
 static int eaten = 0;
 
 static void fork_acquire(int phid, int fork)
@@ -53,8 +38,6 @@ static void fork_release(int phid, int fork)
     pthread_mutex_unlock(&mon);
 }
 
-/* ---------------- 哲学家 ---------------- */
-
 static void *philosopher(void *arg)
 {
     int id = (int)(intptr_t)arg;
@@ -65,14 +48,12 @@ static void *philosopher(void *arg)
         int first  = left;
         int second = right;
 
-        /* 1. 资源顺序分配：永远先申请编号小的那把 */
         if (first > second) {
             int tmp = first;
             first   = second;
             second  = tmp;
         }
 
-        /* 2. 申请两把叉子 */
         fork_acquire(id, first);
         fork_acquire(id, second);
 
@@ -84,15 +65,12 @@ static void *philosopher(void *arg)
         eaten++;
         pthread_mutex_unlock(&mon);
 
-        /* 3. 按相反顺序释放 */
         fork_release(id, second);
         fork_release(id, first);
     }
 
     return NULL;
 }
-
-/* ---------------- 主程序 ---------------- */
 
 int main(void)
 {

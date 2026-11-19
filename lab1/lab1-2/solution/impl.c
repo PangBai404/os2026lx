@@ -11,19 +11,19 @@
 
 static sem_t chairs_sem;
 
-/* TODO 1 的答案：初值 = 椅子数 */
+//TODO 1 的答案：初值 = 椅子数
 void room_init(int chairs)
 {
     sem_init(&chairs_sem, 0, (unsigned)chairs);
 }
 
-/* TODO 2 的答案：P 操作，没有空位就阻塞 */
+//TODO 2 的答案：P 操作，没有空位就阻塞
 void room_acquire(void)
 {
     sem_wait(&chairs_sem);
 }
 
-/* TODO 3 的答案：V 操作，唤醒等待者 */
+//TODO 3 的答案：V 操作，唤醒等待者
 void room_release(void)
 {
     sem_post(&chairs_sem);

@@ -20,20 +20,20 @@ mmap 可以先理解为：把磁盘上的文件"搬"到进程的虚拟地址空�
 这个例子可以帮助你进一步理解，普通 C 程序读改写一个文件要这么做：
 
     buf = malloc(len);
-    read(fd, buf, len);              /* 文件 → 用户缓冲区（第一次拷贝） */
-    ... 修改 buf ...                 /* 在缓冲区里改 */
+    read(fd, buf, len); 文件 → 用户缓冲区（第一次拷贝） 
+    ... 修改 buf ... 在缓冲区里改 
     lseek(fd, 0, SEEK_SET);
-    write(fd, buf, len);             /* 用户缓冲区 → 文件（第二次拷贝） */
+    write(fd, buf, len);  用户缓冲区 → 文件（第二次拷贝） 
 
 两次拷贝、两份存储。而用 mmap 之后：
 
     src = mmap(NULL, len, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-    ... 直接修改 src[i] ...          /* 磁盘访问变成了内存访问 */
+    ... 直接修改 src[i] ...  磁盘访问变成了内存访问 
 
 1. 完成本实验前，你需要学习：基本 C 语言编程（建议至少学到指针和结构体部分），
    以及进程的基本概念。
 2. 你需要先准备好实验环境，参见"实验包目录""环境要求"和"常见问题"。
-   ⚠ 与实验一不同：**本实验必须 POSIX 环境**（macOS / Linux），原因见环境要求。
+   ⚠ 与实验一不同：**本实验必须 POSIX 环境**（macOS），原因见环境要求。
 3. 如果你不是很清楚，这里和代码里都有详细的提示告诉你怎么做。
 4. 写完代码后，可以查看本文档"快速开始"部分运行测例，看看自己写的对不对。
 
@@ -52,13 +52,13 @@ PS：你可以打开 VSCode 或者其它 IDE，用分窗口的方式把这个文
 自动测例把 main 拆走后，第一次看可能不知道整体在干什么。建议先用教学完整版
 mem.c 跑一遍，建立整体印象（**报告截图也从这里来**）：
 
-    cd <实验包根目录>                     # 包含 README.md 的目录
-    cp solution/mem.c ./mem.c             # 复制工作副本，避免修改参考实现
+    cd <实验包根目录>   # 包含 README.md 的目录
+    cp solution/mem.c ./mem.c  # 复制工作副本，避免修改参考实现
     # 编辑 ./mem.c：把 "2345" 改成你的学号后四位
-    printf '0123456789abcWXYZde' > f1     # 准备数据文件（19 字节）
-    gcc mem.c -o mem                      # 编译教学版
-    ./mem                                 # 运行
-    cat f1                                # 看被修改后的文件
+    printf '0123456789abcWXYZde' > f1  # 准备数据文件（19 字节）
+    gcc mem.c -o mem      # 编译教学版
+    ./mem    # 运行
+    cat f1  # 看被修改后的文件
 
 > Apple Silicon 上 `(1) page_size` 会显示 16384，Intel Mac 通常显示 4096；
 > 这是 macOS 的页大小，属正常现象。
@@ -196,10 +196,11 @@ mmap 与 munmap 配对、malloc 与 free 配对，防止"内存泄漏"；
 > 它不是实验包自带文件。
 
 **为什么 main 在测例里？**
+（你可能会疑惑，为啥没有主函数....）
 
 student/impl.c 只包含 6 个函数，main 在 harness/2_harness.c 里。
 这样输出格式、进程关系检查、数值校验都不在你手里，测例才判得准。
-本实验还多一层考虑：fork/wait 的时机、每一轮 f1 的随机数据都由测例统一安排，
+更进一步的是，fork/wait 的时机、每一轮f1的随机数据都由测例统一安排，
 保证所有同学在完全相同的条件下被判分，结果可复现。
 
 建议先读 solution/mem.c（或第 0 步复制出的 mem.c）理解整体流程，再回到 student/impl.c 补 TODO。
@@ -310,7 +311,7 @@ Windows 原生编译器（MinGW/MSVC）没有这些接口；本版本以 macOS �
     ...
     RESULT: PASSED (6 rounds, 不变量 I0~I12 全部满足)
 
-## 为什么无法靠"打印答案"过关
+## 哦对，本实验有“反作弊”，打印答案是不可以的哦 QWQ
 
 1. **nonce 前缀**：main 在 harness 里，每次运行生成一个随机数 nonce，所有
    判分行都以它开头。你的代码拿不到 nonce——自己 printf 的行不带前缀，
@@ -318,14 +319,12 @@ Windows 原生编译器（MinGW/MSVC）没有这些接口；本版本以 macOS �
 2. **数据随机化**：判分模式下 f1 的内容每轮重新随机生成，WXYZ 出现的位置
    也在变。
 3. **退出后重读文件**：程序结束之后，测例会重新 open f1 读一遍。如果你用
-   malloc 冒充 mmap（内存改了但文件没变），这一步必挂。
+   malloc 冒充 mmap（内存改了但文件没变），这一步必出问题。
 4. **源码审计**：make audit 会扫描 student/impl.c 是否试图输出 harness 的
    保留标记（[final]、nonce= 等），并作为记录。
 
 > 上述保证以 `harness/2_harness.c` 和 `tests/check.py` 未被篡改为前提。
-> 比赛判分建议使用干净的 harness/check.py 重新编译，或校验其哈希；
 > `make audit` 是独立的手动检查，不会随 `make test-student` 自动运行，
-> 如作为判分门槛请接入判分脚本/CI。
 
 ## 常见问题
 
@@ -336,7 +335,7 @@ Windows 原生编译器（MinGW/MSVC）没有这些接口；本版本以 macOS �
 
 **getconf PAGESIZE 显示 16384，正常吗？**
 
-正常。Apple Silicon macOS 的页大小是 16384，Intel Mac 通常是 4096。
+正常。M芯片（M1 M2...以上） macOS 的页大小是 16384，Intel 芯片的 Mac 通常是 4096。
 本实验代码用 `getpagesize()` 动态获取，测例用 `os.sysconf("SC_PAGESIZE")`
 独立查询；两者一致即可，不需要把 16384 改成 4096。
 

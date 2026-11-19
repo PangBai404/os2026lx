@@ -23,16 +23,16 @@
 #define NTHREADS 3
 
 typedef struct {
-    int       id;      /* 1..NTHREADS */
-    int       start;   /* 本段起点（含） */
-    int       end;     /* 本段终点（含） */
-    long      sum;     /* 本段结果，只由本线程写入 */
-    pthread_t tid;     /* 由 run_tasks 填写，供 join 和测例使用 */
+    int       id; 
+    int       start; 
+    int       end; 
+    long      sum; 
+    pthread_t tid; 
 } task_t;
 
 /* ============================================================
  * TODO：完成单个线程的计算任务
- *   求 [t->start, t->end] 的整数和，写入 t->sum
+ *   求[t->start, t->end]的整数和，写入t->sum
  * ============================================================ */
 void *run_segment(void *arg)
 {
@@ -60,7 +60,7 @@ void *p3(void *arg) { return run_segment(arg); }
  *   for (i = 0; i < n; i++)
  *       调用 pthread_create(&tasks[i].tid, NULL, entry[i], &tasks[i])
  *   其中 entry[] 依次是 p1、p2、p3
- *   返回非 0 表示出错（可以让 main 提前返回非 0）
+ *   返回非0表示出错（可以让 main 提前返回非 0）
  *
  * TODO 3：等待所有线程结束
  *   for (i = 0; i < n; i++)
@@ -74,8 +74,8 @@ int run_tasks(task_t *tasks, int n)
     (void)tasks;
     (void)n;
 
-    /* TODO: 创建线程 ... */
-    /* TODO: 等待线程 ... */
+    //TODO: 创建线程
+    //TODO: 等待线程
 
     return 0;
 }

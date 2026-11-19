@@ -1,5 +1,5 @@
 /*
- * 实验一 · 任务 4：生产者与消费者（学生提交文件）
+ * 实验一 · 任务 4：生产者与消费者（学生提交文件，MAC版本）
  *
  * 这个文件由 tests/harness.c 链接使用：main 在测例那边，你只写下面三个函数。
  *
@@ -20,7 +20,7 @@
  *
  * 提示：
  *   - 空位信号量的初值是缓冲池容量 bufsize，非空信号量的初值是 0；
- *   - 两个信号量只管「能不能进」，互斥要另外用 mutex 保证；
+ *   - 两个信号量只管能不能进，互斥要另外用 mutex 保证；
  *   - 信号量的等待（sem_wait）放在加锁之前，否则会死锁；
  *   - sem_post 放在解锁之后即可。
  *
@@ -31,12 +31,11 @@
 #include <semaphore.h>
 #include "sem_compat.h"
 
-/* 同步对象已经声明好了，直接用 */
-static sem_t empty_sem;    /* 空位数量 */
-static sem_t full_sem;     /* 已放入的产品数量 */
+//同步对象已经声明好了，直接用
+static sem_t empty_sem; //空位数量
+static sem_t full_sem; //已放入的产品数量
 static pthread_mutex_t buf_mtx = PTHREAD_MUTEX_INITIALIZER;
 
-/* 测例提供的接口 */
 void lab_buf_push(int product);
 int  lab_buf_pop(void);
 
@@ -49,42 +48,42 @@ int  lab_buf_pop(void);
 void pc_init(int bufsize)
 {
     (void)bufsize;
-    (void)empty_sem;   /* TODO 补全后会使用；先消除未使用警告 */
+    (void)empty_sem; //TODO 补全后会使用；先消除未使用警告
     (void)full_sem;
-    (void)buf_mtx;     /* TODO 补全后会使用 */
+    (void)buf_mtx; //TODO 补全后会使用
 
-    /* TODO: 初始化 empty_sem 与 full_sem */
+    //TODO: 初始化 empty_sem 与 full_sem
 }
 
 /* ============================================================
  * TODO 2：放入一个产品
  *   顺序很重要：先等空位，再加锁，然后写入
- *   1. sem_wait(&empty_sem);           // 池满了就在这里等
+ *   1. sem_wait(&empty_sem); 池满了就在这里等
  *   2. pthread_mutex_lock(&buf_mtx);
- *   3. lab_buf_push(product);          // 测例提供的写入
+ *   3. lab_buf_push(product); 测例提供的写入
  *   4. pthread_mutex_unlock(&buf_mtx);
- *   5. sem_post(&full_sem);            // 告诉消费者有东西了
+ *   5. sem_post(&full_sem); 告诉消费者有东西了
  * ============================================================ */
 void pc_put(int product)
 {
     (void)product;
 
-    /* TODO: 按上面的顺序实现 */
+    //TODO: 按上面的顺序实现 
 }
 
 /* ============================================================
  * TODO 3：取出一个产品
- *   与 pc_put 对称：先等非空，再加锁，然后读取
- *   1. sem_wait(&full_sem);            // 池空了就在这里等
+ *   与 pc_put 对称：先等非空，再加锁，然后读取，这样写：
+ *   1. sem_wait(&full_sem);池空了就在这里等
  *   2. pthread_mutex_lock(&buf_mtx);
- *   3. int v = lab_buf_pop();          // 测例提供的读取
+ *   3. int v = lab_buf_pop();测例提供的读取
  *   4. pthread_mutex_unlock(&buf_mtx);
- *   5. sem_post(&empty_sem);           // 告诉生产者有空位了
+ *   5. sem_post(&empty_sem);告诉生产者有空位了
  *   6. return v;
  * ============================================================ */
 int pc_get(void)
 {
-    /* TODO: 按上面的顺序实现 */
+    //TODO: 按上面的顺序实现
 
     return 0;
 }

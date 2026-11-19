@@ -38,8 +38,8 @@ PS：你可以打开 VSCode 或者其它IDE，可以用分窗口的方式将这�
 
 ```c
 static int slot;
-static sem_t can_put;   /* 初值 1：有一个空位 */
-static sem_t can_get;   /* 初值 0：没有产品 */
+static sem_t can_put; //初值 1：有一个空位
+static sem_t can_get; //初值 0：没有产品
 
 void *producer(void *arg) {
     for (int i = 0; i < ITEMS; i++) {
@@ -87,12 +87,11 @@ lab1-4/
 ```
 
 **为什么 main 在测例里？**
+（你可能会困惑：没有主函数怎么跑？）
 
 `student/impl.c` 只包含三个函数，`main` 在 `tests/harness.c` 里，
 缓冲池也由测例持有。这样「池子里同时有几个、每个产品被谁取走」
 都由测例统计，你不碰这些代码，测例才判得准。
-
-建议先读 `solution/4.c` 理解整体流程，再回到 `student/impl.c` 补 TODO。
 
 ## 环境要求
 

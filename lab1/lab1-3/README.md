@@ -49,23 +49,22 @@ PS：你可以打开 VSCode 或者其它IDE，可以用分窗口的方式将这�
 ```
 lab1-3/
 ├── Makefile
-├── README.md          也就是你在看的这个
+├── README.md  也就是你在看的这个
 │
-├── student/impl.c     ★ 你要写的文件（三处 TODO，不含 main）
-├── tests/harness.c      测例骨架：自带 main，提供取叉接口并统计顺序
-├── tests/check.py       测例：检查不变量，而不是比对整段输出
+├── student/impl.c  ★ 你要写的文件（三处 TODO，不含 main）
+├── tests/harness.c   测例骨架：自带 main，提供取叉接口并统计顺序
+├── tests/check.py  测例：检查不变量，而不是比对整段输出
 │
-├── solution/9.c         完整单文件版答案（含 main），用来看整体结构
-└── solution/impl.c      函数版答案，与你写的文件结构一致
+├── solution/9.c   完整单文件版答案（含 main），用来看整体结构
+└── solution/impl.c  函数版答案，与你写的文件结构一致
 ```
 
 **为什么 main 在测例里？**
+（你可能会困惑：没有主函数怎么跑？）
 
 `student/impl.c` 只包含一个函数，`main` 和叉子的实现都在 `tests/harness.c` 里。
 这样「谁在什么时候拿了哪把叉子」由测例记录，
 你不碰这些代码，测例才能判断你是不是真的按编号顺序申请的。
-
-建议先读 `solution/9.c` 理解整体流程，再回到 `student/impl.c` 补 TODO。
 
 ## 环境要求
 

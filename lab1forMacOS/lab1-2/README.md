@@ -118,23 +118,22 @@ V操作：释放资源，也就是
 ```
 lab1-2/
 ├── Makefile
-├── README.md          也就是你在看的这个
+├── README.md   也就是你在看的这个
 │
-├── student/impl.c     ★ 你要写的文件（三处 TODO，不含 main）
-├── tests/harness.c      测例骨架：自带 main，创建顾客并统计同时就座人数
-├── tests/check.py       测例：检查不变量，而不是比对整段输出
+├── student/impl.c  ★ 你要写的文件（三处 TODO，不含 main）
+├── tests/harness.c  测例骨架：自带 main，创建顾客并统计同时就座人数
+├── tests/check.py 测例：检查不变量，而不是比对整段输出
 │
-├── solution/4.c         完整单文件版答案（含 main），用来看整体结构
-└── solution/impl.c      函数版答案，与你写的文件结构一致
+├── solution/4.c   完整单文件版答案（含 main），用来看整体结构
+└── solution/impl.c  函数版答案，与你写的文件结构一致
 ```
 
 **为什么 main 在测例里？**
+（你可能会困惑：没有主函数怎么跑？）
 
 `student/impl.c` 只包含三个函数，`main` 在 `tests/harness.c` 里。
 这样「顾客什么时候坐下、什么时候离开、同时有几个人在座」都由测例统计，
 你不碰这些代码，测例才判得准。
-
-建议先读 `solution/4.c` 理解整体流程，再回到 `student/impl.c` 补 TODO。
 
 ## 环境要求
 

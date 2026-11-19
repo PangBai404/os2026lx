@@ -1,19 +1,4 @@
 #!/usr/bin/env python3
-"""
-实验一 · 任务 2 的测例。
-
-用法：
-    python tests/check.py                       # 测 build/4_harness（答案）
-    python tests/check.py build/4_student       # 测学生提交
-    python tests/check.py build/4_solution      # 测完整单文件版（仅看能否跑通）
-
-判据（不比对完整输出，只检查不变量）：
-    1. 10 位顾客全部完成，没有死锁（能正常退出且不超过 30 秒）；
-    2. 同时在座人数从未超过 2（violations 必须为 0）；
-    3. 同时在座的最大人数恰好是 2（不是 1，说明两把椅子都用上了）；
-    4. 连续运行多次结果一致。
-"""
-
 import re
 import subprocess
 import sys
@@ -95,14 +80,12 @@ def check(binary):
     if err.strip():
         failures.append(f"stderr not empty: {err.strip()[:200]}")
 
-    # 1. 全部完成
     served = kv.get("served")
     if served is None:
         failures.append("missing served=")
     elif int(served) != CUSTOMERS:
         failures.append(f"served should be {CUSTOMERS}, got {served}")
 
-    # 2. 不超员
     viol = kv.get("violations")
     if viol is None:
         failures.append("missing violations=")
@@ -112,7 +95,6 @@ def check(binary):
             f"(the semaphore is not limiting the room)"
         )
 
-    # 3. 两把椅子都用上了
     peak = kv.get("peak_seats")
     if peak is None:
         failures.append("missing peak_seats=")
@@ -126,7 +108,6 @@ def check(binary):
                 f"(expected {CHAIRS}) - check the initial value passed to sem_init"
             )
 
-    # 4. 多次运行稳定
     for _ in range(5):
         r2, _ = run_once(binary)
         if r2 == "timeout":

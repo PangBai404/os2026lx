@@ -1,20 +1,4 @@
 #!/usr/bin/env python3
-"""
-实验一 · 任务 4 的测例。
-
-用法：
-    python3 tests/check.py                       # 测 build/4_harness（答案）
-    python3 tests/check.py build/4_student       # 测学生提交
-    python3 tests/check.py build/4_solution      # 测完整单文件版（仅看能否跑通）
-
-判据（不比对完整输出，只检查不变量）：
-    1. 100 个产品全部生产和消费完毕，没有卡死（30 秒内退出）；
-    2. 缓冲池从未超出容量（overflow 必须为 0），也从未在空时被读（underflow 为 0）；
-    3. 每个产品恰好被消费一次（没有重复、没有丢失、没有非法编号）；
-    4. 结束时缓冲池为空（leftover 为 0）；
-    5. 连续运行多次结果一致。
-"""
-
 import re
 import subprocess
 import sys
@@ -100,7 +84,6 @@ def check(binary):
     if err.strip():
         failures.append(f"stderr not empty: {err.strip()[:200]}")
 
-    # 1. 全部生产、全部消费
     for key in ("produced", "consumed"):
         v = kv.get(key)
         if v is None:
@@ -108,7 +91,6 @@ def check(binary):
         elif int(v) != TOTAL_ITEMS:
             failures.append(f"{key} should be {TOTAL_ITEMS}, got {v}")
 
-    # 2. 缓冲区边界
     of = kv.get("overflow")
     if of is None:
         failures.append("missing overflow=")
@@ -131,7 +113,6 @@ def check(binary):
     if peak is not None and int(peak) > BUFSIZE:
         failures.append(f"peak_occupancy should never exceed {BUFSIZE}, got {peak}")
 
-    # 3. 每个产品恰好一次
     dup = kv.get("duplicates")
     if dup is None:
         failures.append("missing duplicates=")
@@ -155,14 +136,12 @@ def check(binary):
             f"{unexp} consumed value(s) have an invalid product id"
         )
 
-    # 4. 结束时缓冲区应为空
     left = kv.get("leftover")
     if left is None:
         failures.append("missing leftover=")
     elif int(left) != 0:
         failures.append(f"{left} item(s) left in the buffer at the end")
 
-    # 5. 多次运行稳定
     for _ in range(4):
         r2 = run_once(binary)
         if r2 is None:

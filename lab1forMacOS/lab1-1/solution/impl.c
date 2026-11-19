@@ -21,7 +21,7 @@ typedef struct {
     pthread_t tid;
 } task_t;
 
-/* TODO 1 的答案：求 [start, end] 的整数和 */
+//TODO 1 的答案：求 [start, end] 的整数和
 void *run_segment(void *arg)
 {
     task_t *t = (task_t *)arg;
@@ -42,7 +42,7 @@ int run_tasks(task_t *tasks, int n)
 {
     void *(*entry[NTHREADS])(void *) = { p1, p2, p3 };
 
-    /* TODO 2 的答案：创建线程 */
+    //TODO 2 的答案：创建线程
     for (int i = 0; i < n; i++) {
         int rc = pthread_create(&tasks[i].tid, NULL, entry[i], &tasks[i]);
         if (rc != 0) {
@@ -51,7 +51,7 @@ int run_tasks(task_t *tasks, int n)
         }
     }
 
-    /* TODO 3 的答案：等待全部结束 */
+    //TODO 3 的答案：等待全部结束
     for (int i = 0; i < n; i++) {
         pthread_join(tasks[i].tid, NULL);
     }

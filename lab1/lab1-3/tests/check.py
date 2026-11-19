@@ -1,19 +1,4 @@
 #!/usr/bin/env python3
-"""
-实验一 · 任务 3 的测例。
-
-用法：
-    python tests/check.py                       # 测 build/9_harness（答案）
-    python tests/check.py build/9_student       # 测学生提交
-    python tests/check.py build/9_solution      # 测完整单文件版（仅看能否跑通）
-
-判据（不比对完整输出，只检查不变量）：
-    1. 25 顿饭全部吃完，没有死锁（30 秒内退出）；
-    2. 每次申请都满足资源顺序：先申请编号小的叉子；
-    3. 每次吃饭时都握着两把叉子，每次释放的都是自己持有的叉子；
-    4. 连续运行多次结果一致。
-"""
-
 import re
 import subprocess
 import sys
@@ -96,7 +81,6 @@ def check(binary):
     if err.strip():
         failures.append(f"stderr not empty: {err.strip()[:200]}")
 
-    # 1. 全部吃完
     eaten = kv.get("eaten")
     if eaten is None:
         failures.append("missing eaten=")
@@ -106,7 +90,6 @@ def check(binary):
             f"- every philosopher must finish {MEALS} meals"
         )
 
-    # 2. 资源顺序分配
     order = kv.get("order_violations")
     if order is None:
         failures.append("missing order_violations=")
@@ -120,7 +103,6 @@ def check(binary):
             msg += f" (first example: {example})"
         failures.append(msg)
 
-    # 3. 持叉与释放
     hold = kv.get("hold_violations")
     if hold is None:
         failures.append("missing hold_violations=")
@@ -139,7 +121,6 @@ def check(binary):
             f"- check the fork ids passed to lab_fork_release()"
         )
 
-    # 4. 多次运行稳定
     for _ in range(4):
         r2 = run_once(binary)
         if r2 is None:
